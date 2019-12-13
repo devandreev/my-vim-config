@@ -15,14 +15,15 @@ Plug 'posva/vim-vue'
 call plug#end()
 
 syntax on
-"colorscheme gruvbox
-"set background=dark
+colorscheme gruvbox
+set background=dark
 set number hls is
 set expandtab tabstop=2 sw=2
 
 "mappings
 
 imap jj <ESC>
+nnoremap <Leader><space> :noh<cr>
 map <C-n> :NERDTreeToggle<CR>
 map <Leader> <Plug>(easymotion-prefix)
 
@@ -35,7 +36,8 @@ map <silent> <C-l> :call WinMove('l')<CR>
 function! WinMove(key) 
   let t:curwin = winnr()
   exec "wincmd ".a:key
-  if (t:curwin == winnr()) if (match(a:key,'[jk]'))
+  if (t:curwin == winnr())
+    if (match(a:key,'[jk]'))
       wincmd v
     else
       wincmd s
