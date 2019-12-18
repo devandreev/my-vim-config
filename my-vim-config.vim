@@ -1,7 +1,9 @@
+so /usr/share/doc/fzf/examples/fzf.vim
+"set path +=/home/leadbro/Work/Projects/teletype/source/**
+set includeexpr=substitute(v:fname,'^\\~','/home/leadbro/Work/Projects/teletype/source/src/','')
 "vim-plug
 call plug#begin('~/.vim/plugged')
 
-Plug 'ycm-core/YouCompleteMe'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'jiangmiao/auto-pairs'
 Plug 'airblade/vim-gitgutter'
@@ -13,13 +15,23 @@ Plug 'terryma/vim-expand-region'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/fzf.vim'
-so /usr/share/doc/fzf/examples/fzf.vim
+Plug 'scrooloose/nerdcommenter'
+
+let g:deoplete#enable_at_startup = 1
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 
 "colorschemes
 Plug 'NLKNguyen/papercolor-theme'
 
 "hls
-Plug 'posva/vim-vue'
+Plug 'sheerun/vim-polyglot'
+Plug 'ap/vim-css-color'
 
 call plug#end()
 
@@ -48,10 +60,13 @@ set expandtab tabstop=2 sw=2
 "mappings
 
 imap jj <ESC>
+nnoremap <Leader>o o<Esc>
+nnoremap <Leader>O O<Esc>
 nnoremap <Leader><space> :noh<cr>
 map <C-n> :NERDTreeToggle<CR>
 map <Leader> <Plug>(easymotion-prefix)
 
+set pastetoggle=<F2>
 map <silent> <C-h> :call WinMove('h')<CR>
 map <silent> <C-j> :call WinMove('j')<CR>
 map <silent> <C-k> :call WinMove('k')<CR>
@@ -71,3 +86,25 @@ function! WinMove(key)
     exec "wincmd ".a:key
   endif
 endfunction
+
+
+let g:ft = ''
+fu! NERDCommenter_before()
+  if &ft == 'vue'
+    let g:ft = 'vue'
+    let stack = synstack(line('.'), col('.'))
+    if len(stack) > 0
+      let syn = synIDattr((stack)[0], 'name')
+      if len(syn) > 0
+        let syn = tolower(syn)
+        exe 'setf '.syn
+      endif
+    endif
+  endif
+endfu
+fu! NERDCommenter_after()
+  if g:ft == 'vue'
+    setf vue
+    g:ft
+  endif
+endfu
